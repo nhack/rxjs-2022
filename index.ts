@@ -1,11 +1,9 @@
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 const currentTime$ = new Observable((subscriber) => {
-  const dateStr = new Date();
-  subscriber.next(dateStr);
-  subscriber.complete();
+  setInterval(() => subscriber.next(new Date()), 1000);
 });
 
-currentTime$.subscribe((date) => console.log(date));
-setTimeout(() => currentTime$.subscribe((date) => console.log(date)), 1000);
-setTimeout(() => currentTime$.subscribe((date) => console.log(date)), 2000);
+const subs: Subscription = currentTime$.subscribe((date) => console.log(date));
+
+setTimeout(() => subs.unsubscribe(), 10000);
