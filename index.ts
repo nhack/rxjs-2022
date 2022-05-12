@@ -1,16 +1,12 @@
-import { Observable, Subscriber } from 'rxjs';
+import { Observable, Subscriber, from } from 'rxjs';
 
 import { IPizza } from './pizza/pizza.model';
 import { PIZZAS } from './pizza/pizza.data';
 
-// this method is called whit the first subscription
-const generator = (subscriber: Subscriber<IPizza>) => {
-  for (let pizza of PIZZAS) {
-    subscriber.next(pizza);
-  }
-};
-
-const pizzas$ = new Observable(generator);
+const pizzas$ = from(PIZZAS);
 
 // register the observer on the observable
-pizzas$.subscribe((pizza) => console.log(pizza.name));
+pizzas$.subscribe({
+  next: (pizza) => console.log(pizza.name),
+  complete: () => console.log('subscrption is completed'),
+});
