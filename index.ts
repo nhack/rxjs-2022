@@ -8,9 +8,9 @@ const generator = (subscriber: Subscriber<IPizza>) => {
   for (let pizza of PIZZAS) {
     subscriber.next(pizza);
   }
-}
+};
 
 const pizzas$ = new Observable(generator);
 
 // register the observer on the observable
-pizzas$.subscribe({next: pizza => console.log(pizza.name)});
+pizzas$.subscribe((pizza) => console.log(pizza.name));
