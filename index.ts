@@ -1,25 +1,26 @@
-import { interval, Subject } from 'rxjs';
-import { take } from 'rxjs/operators';
+import {
+  queueScheduler,
+  asapScheduler,
+  asyncScheduler,
+  merge,
+  scheduled,
+} from 'rxjs';
 
-const source$ = interval(1000).pipe(take(4));
-const subject$ = new Subject();
+import { tap } from 'rxjs/operators';
 
-source$.subscribe(subject$);
+console.log('Start script.');
 
-subject$.subscribe((value) => console.log(`Observer 1: ${value}`));
-setTimeout(
-  () => subject$.subscribe((value) => console.log(`Observer 2: ${value}`)),
-  1000
-);
-setTimeout(
-  () => subject$.subscribe((value) => console.log(`Observer 3: ${value}`)),
-  2000
-);
-setTimeout(
-  () =>
-    subject$.subscribe({
-      next: (value) => console.log(`Observer 4: ${value}`),
-      complete: () => console.log('Observer 4 complete.'),
-    }),
-  4500
-);
+const queue$ = scheduled(['QueueScheduler (sync task)'], queueScheduler);
+const asap$ = scheduled(['AsapScheduler (async micro task)'], asapScheduler);
+const async$ = scheduled(['AsyncScheduler (async task)'], asyncScheduler);
+
+merge(queue$, asap$, async$).subscribe((value) => console.log(value));
+
+scheduled([1, 2, 3, 4], queueScheduler)
+  .pipe(
+    tap((value) => console.log(`Value: ${value}`)),
+    tap((value) => console.log(`Doubled value: ${value * 2}`))
+  )
+  .subscribe();
+
+console.log('End script.');
