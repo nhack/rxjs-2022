@@ -1,12 +1,11 @@
-import { Observable, Subscriber, from } from 'rxjs';
+import { Observable } from 'rxjs';
 
-import { IPizza } from './pizza/pizza.model';
-import { PIZZAS } from './pizza/pizza.data';
-
-const pizzas$ = from(PIZZAS);
-
-// register the observer on the observable
-pizzas$.subscribe({
-  next: (pizza) => console.log(pizza.name),
-  complete: () => console.log('subscrption is completed'),
+const currentTime$ = new Observable((subscriber) => {
+  const dateStr = new Date();
+  subscriber.next(dateStr);
+  subscriber.complete();
 });
+
+currentTime$.subscribe((date) => console.log(date));
+setTimeout(() => currentTime$.subscribe((date) => console.log(date)), 1000);
+setTimeout(() => currentTime$.subscribe((date) => console.log(date)), 2000);
