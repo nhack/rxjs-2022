@@ -1,9 +1,12 @@
-import { Observable, Subscription } from 'rxjs';
+import { Observable, OperatorFunction } from 'rxjs';
+import { map } from 'rxjs/operators';
 
-const currentTime$ = new Observable((subscriber) => {
+const currentTime$: Observable<Date> = new Observable((subscriber) => {
   setInterval(() => subscriber.next(new Date()), 1000);
 });
 
-const subs: Subscription = currentTime$.subscribe((date) => console.log(date));
+const toTime = (date: Date) => date.getTime();
+const toTimeMap: OperatorFunction<Date, number> = map(toTime);
 
-setTimeout(() => subs.unsubscribe(), 10000);
+toTimeMap(currentTime$).subscribe((time) => console.log('Manual:' + time));
+currentTime$.pipe(toTimeMap).subscribe((time) => console.log('Pipe:' + time));
